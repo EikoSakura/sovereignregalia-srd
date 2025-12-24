@@ -15,12 +15,3 @@
     "width": 450
   }
 }
-```
-
-5. Click the green **Commit changes** button (top right)
-
-6. In the popup, just click **Commit changes** again
-
-7. Wait 1-2 minutes, then try adding the extension in Owlbear again:
-```
-https://cdn.jsdelivr.net/gh/EikoSakura/sovereignregalia-srd@main/manifest.json
