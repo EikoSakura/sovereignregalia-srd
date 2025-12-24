@@ -1,0 +1,16 @@
+{
+  "name": "Sovereign Regalia SRD",
+  "id": "com.sovereign-regalia.srd",
+  "version": "1.0.0",
+  "description": "Quick reference document for Sovereign Regalia TTRPG rules, conditions, terrain, and mechanics.",
+  "author": "Sovereign Regalia",
+  "image": "icon.svg",
+  "icon": "icon.svg",
+  "action": {
+    "title": "Sovereign Regalia SRD",
+    "icon": "icon.svg",
+    "popover": "/index.html",
+    "height": 600,
+    "width": 450
+  }
+}

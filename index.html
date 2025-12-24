@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sovereign Regalia SRD</title>
+  <style>
+    :root {
+      --bg-primary: #1a1625;
+      --bg-secondary: #252033;
+      --bg-tertiary: #2d2640;
+      --accent-purple: #8b5cf6;
+      --accent-gold: #fbbf24;
+      --text-primary: #e8e3f3;
+      --text-secondary: #a89ec9;
+      --text-muted: #6b6087;
+      --border-color: #3d3556;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--accent-purple);
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header h1::before {
+      content: '📖';
+    }
+
+    /* Search */
+    .search-container {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px 8px 32px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-purple);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 8px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .section.hidden {
+      display: none;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--bg-tertiary);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .section-header:hover {
+      background: #363050;
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--accent-gold);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-toggle {
+      color: var(--text-muted);
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
+
+    .section.expanded .section-toggle {
+      transform: rotate(180deg);
+    }
+
+    .section-content {
+      display: none;
+      padding: 12px 14px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .section.expanded .section-content {
+      display: block;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 12px;
+    }
+
+    th, td {
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: var(--bg-tertiary);
+      color: var(--accent-purple);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:hover {
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    /* Subsections */
+    .subsection {
+      margin: 10px 0;
+    }
+
+    .subsection-title {
+      font-weight: 600;
+      color: var(--accent-purple);
+      font-size: 12px;
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Definition lists */
+    .def-item {
+      margin-bottom: 8px;
+      padding: 8px;
+      background: var(--bg-primary);
+      border-radius: 4px;
+      border-left: 3px solid var(--accent-purple);
+    }
+
+    .def-term {
+      font-weight: 600;
+      color: var(--accent-gold);
+      margin-bottom: 2px;
+    }
+
+    .def-desc {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    /* Tags */
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    .tag-physical { background: #dc2626; color: white; }
+    .tag-magical { background: #7c3aed; color: white; }
+    .tag-tier1 { background: #059669; color: white; }
+    .tag-tier2 { background: #d97706; color: white; }
+    .tag-tier3 { background: #dc2626; color: white; }
+
+    /* Quick nav */
+    .quick-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .quick-nav-btn {
+      padding: 4px 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-nav-btn:hover {
+      background: var(--accent-purple);
+      color: white;
+      border-color: var(--accent-purple);
+    }
+
+    /* Highlight for search */
+    .highlight {
+      background: var(--accent-gold);
+      color: var(--bg-primary);
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
+    /* Notes */
+    .note {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid var(--accent-purple);
+      border-radius: 4px;
+      padding: 8px;
+      margin: 8px 0;
+      font-size: 12px;
+    }
+
+    .note-title {
+      font-weight: 600;
+      color: var(--accent-purple);
+      margin-bottom: 4px;
+    }
+
+    /* Element colors */
+    .elem-flame { color: #f97316; }
+    .elem-frost { color: #38bdf8; }
+    .elem-storm { color: #facc15; }
+    .elem-gale { color: #a3e635; }
+    .elem-stone { color: #a8a29e; }
+    .elem-tide { color: #22d3ee; }
+    .elem-venom { color: #a855f7; }
+    .elem-light { color: #fef08a; }
+    .elem-shadow { color: #6b7280; }
+    .elem-spirit { color: #c4b5fd; }
+    .elem-steel { color: #94a3b8; }
+    .elem-decay { color: #84cc16; }
+
+    /* Scrollbar */
+    .content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .content::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    .content::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    .content::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-purple);
+    }
+
+    /* Formula */
+    .formula {
+      font-family: monospace;
+      background: var(--bg-primary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--accent-gold);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>System Reference</h1>
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search rules, conditions, terrain...">
+    </div>
+  </div>
+
+  <div class="content" id="content">
+    <!-- Quick Nav -->
+    <div class="quick-nav">
+      <button class="quick-nav-btn" data-section="action-economy">Actions</button>
+      <button class="quick-nav-btn" data-section="attack-resolution">Attacks</button>
+      <button class="quick-nav-btn" data-section="conditions">Conditions</button>
+      <button class="quick-nav-btn" data-section="terrain">Terrain</button>
+      <button class="quick-nav-btn" data-section="elements">Elements</button>
+      <button class="quick-nav-btn" data-section="movement">Movement</button>
+    </div>
+
+    <!-- Action Economy -->
+    <div class="section expanded" id="action-economy" data-keywords="action move order reaction free turn round">
+      <div class="section-header">
+        <span class="section-title">⚔️ Action Economy</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <table>
+          <tr><th>Type</th><th>Description</th></tr>
+          <tr><td><strong>Action</strong></td><td>Attack, use Art, use consumable, significant activity</td></tr>
+          <tr><td><strong>Move</strong></td><td>Up to MOV spaces. Can split before/after Action</td></tr>
+          <tr><td><strong>Order</strong></td><td>Command one Retainer (move + action). Once per Retainer/round</td></tr>
+          <tr><td><strong>Reaction</strong></td><td>Triggered response. Resets at start of your next activation</td></tr>
+          <tr><td><strong>Free Action</strong></td><td>Minor activities. Unlimited if conditions met</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Attack Resolution -->
+    <div class="section" id="attack-resolution" data-keywords="attack hit damage roll physical magical strike resonance eva meva guard barrier critical crit piercing glancing">
+      <div class="section-header">
+        <span class="section-title">🎯 Attack Resolution</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <div class="subsection-title">Attack Rolls</div>
+          <div class="def-item">
+            <div class="def-term"><span class="tag tag-physical">Physical</span> 2d6 + Strike Rating vs EVA</div>
+            <div class="def-desc">Damage reduced by Guard</div>
+          </div>
+          <div class="def-item">
+            <div class="def-term"><span class="tag tag-magical">Magical</span> 2d6 + Resonance Rating vs M.EVA</div>
+            <div class="def-desc">Damage reduced by Barrier</div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Hit Tiers</div>
+          <table>
+            <tr><th>Tier</th><th>Margin</th><th>Damage</th></tr>
+            <tr><td>Glancing</td><td>0 or less</td><td>1 Piercing</td></tr>
+            <tr><td>Noble</td><td>1–2</td><td>2</td></tr>
+            <tr><td>Royal</td><td>3–4</td><td>3</td></tr>
+            <tr><td>Imperial</td><td>5+</td><td>4</td></tr>
+          </table>
+        </div>
+
+        <div class="note">
+          <div class="note-title">Damage Formula</div>
+          Total = Tier Damage + Base Damage + Bonuses − Guard/Barrier (min 1)
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Critical Hits</div>
+          <p>When margin ≥ critical threshold (default <strong>7</strong>):</p>
+          <p>Calculate damage → Multiply by <strong>3</strong> → Then subtract Guard/Barrier (min 1)</p>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Piercing Damage</div>
+          <p>Ignores Guard and Barrier. Cannot be reduced unless specifically stated.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conditions -->
+    <div class="section" id="conditions" data-keywords="condition status effect stagger slow burdened prone immobilized exposed marked sealed isolated terrified provoked suppressed blinded dazed shattered decay grapple paralyze dominate petrify banish">
+      <div class="section-header">
+        <span class="section-title">💫 Conditions</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <div class="subsection-title"><span class="tag tag-tier1">Tier 1</span> Conditions</div>
+          <table>
+            <tr><th>Condition</th><th>Effect</th></tr>
+            <tr><td><strong>Staggered</strong></td><td>Cannot use Reactions</td></tr>
+            <tr><td><strong>Slow</strong></td><td>MOV reduced by 2</td></tr>
+            <tr><td><strong>Burdened</strong></td><td>−1 MOV/stack. Remove 1 at activation. Action removes all. Teleport removes all</td></tr>
+            <tr><td><strong>Prone</strong></td><td>Stand costs 2 MOV. Melee +2 vs you. Ranged −2 vs you</td></tr>
+            <tr><td><strong>Immobilized</strong></td><td>Cannot move. May still take Actions, Orders, Reactions</td></tr>
+            <tr><td><strong>Exposed</strong></td><td>Guard and Barrier −2</td></tr>
+            <tr><td><strong>Marked</strong></td><td>Source's attacks +2 to hit you. Until re-Marked or scene ends</td></tr>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title"><span class="tag tag-tier2">Tier 2</span> Conditions</div>
+          <table>
+            <tr><th>Condition</th><th>Effect</th></tr>
+            <tr><td><strong>Sealed</strong></td><td>Cannot activate Arts</td></tr>
+            <tr><td><strong>Isolated</strong></td><td>Cannot benefit from allied abilities</td></tr>
+            <tr><td><strong>Terrified</strong></td><td>Cannot willingly move closer to source</td></tr>
+            <tr><td><strong>Provoked</strong></td><td>Must include source as target if attacking</td></tr>
+            <tr><td><strong>Suppressed</strong></td><td>Attack rolls −2</td></tr>
+            <tr><td><strong>Blinded</strong></td><td>Attacks −3. Cannot target beyond 2 spaces</td></tr>
+            <tr><td><strong>Dazed</strong></td><td>Action OR Move, not both. No Reactions</td></tr>
+            <tr><td><strong>Shattered</strong></td><td>Guard and Barrier −3 until scene ends</td></tr>
+            <tr><td><strong>Decay</strong></td><td>Cannot restore HP</td></tr>
+            <tr><td><strong>Grappled</strong></td><td>Both cannot move. Action to contest/break</td></tr>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title"><span class="tag tag-tier3">Tier 3</span> Conditions</div>
+          <table>
+            <tr><th>Condition</th><th>Effect</th></tr>
+            <tr><td><strong>Paralyzed</strong></td><td>Cannot move or act. Attacks auto-Royal</td></tr>
+            <tr><td><strong>Dominated</strong></td><td>Cannot target source with attacks/harmful effects</td></tr>
+            <tr><td><strong>Petrified</strong></td><td>Becomes blocking terrain. Cannot act. Immune to damage</td></tr>
+            <tr><td><strong>Banished</strong></td><td>Removed from battlefield until source's next activation ends</td></tr>
+          </table>
+        </div>
+
+        <div class="note">
+          <div class="note-title">Default Duration</div>
+          Unless stated otherwise, conditions last until end of target's next activation.
+        </div>
+      </div>
+    </div>
+
+    <!-- Element Conditions -->
+    <div class="section" id="elements" data-keywords="element flame frost storm gale stone tide venom light shadow spirit steel decay burning frozen shocked unbalanced bleeding withering poisoned drenched exposed shattered weakness resistance immunity absorb">
+      <div class="section-header">
+        <span class="section-title">🔥 Elements & Conditions</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <div class="subsection-title">Element Conditions (via Afflict)</div>
+          <table>
+            <tr><th>Element</th><th>Condition</th><th>Effect</th></tr>
+            <tr><td class="elem-decay">Decay</td><td>Withering</td><td>No HP restore. 2 Piercing at activation start</td></tr>
+            <tr><td class="elem-flame">Flame</td><td>Burning</td><td>3 dmg (−Barrier) at activation start. Action removes</td></tr>
+            <tr><td class="elem-frost">Frost</td><td>Frozen</td><td>Immobilized. +2 dmg if damaged (ends)</td></tr>
+            <tr><td class="elem-gale">Gale</td><td>Unbalanced</td><td>No Reactions. Next attack −2</td></tr>
+            <tr><td class="elem-light">Light</td><td>Exposed</td><td>Guard and Barrier −3</td></tr>
+            <tr><td class="elem-shadow">Shadow</td><td>Blinded</td><td>Attacks −3. Max range 2</td></tr>
+            <tr><td class="elem-spirit">Spirit</td><td>Staggered</td><td>No Reactions. Source changes 1 Pool die</td></tr>
+            <tr><td class="elem-steel">Steel</td><td>Bleeding</td><td>2 Piercing at activation end. Until healed/scene ends</td></tr>
+            <tr><td class="elem-stone">Stone</td><td>Shattered</td><td>Guard −3 until scene ends</td></tr>
+            <tr><td class="elem-storm">Storm</td><td>Shocked</td><td>No Reactions. Half MOV next activation</td></tr>
+            <tr><td class="elem-tide">Tide</td><td>Drenched</td><td>−2 EVA. Weakness to Frost & Storm</td></tr>
+            <tr><td class="elem-venom">Venom</td><td>Poisoned</td><td>2 Piercing at activation start. −1 attacks. Until healed/scene ends</td></tr>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Elemental Interactions</div>
+          <table>
+            <tr><th>Type</th><th>Effect</th></tr>
+            <tr><td><strong>Weakness</strong></td><td>+2 damage after reduction</td></tr>
+            <tr><td><strong>Resistance</strong></td><td>−2 damage after reduction (min 1)</td></tr>
+            <tr><td><strong>Immunity</strong></td><td>0 damage</td></tr>
+            <tr><td><strong>Absorb</strong></td><td>Restore HP instead. Glancing = 1 HP</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terrain -->
+    <div class="section" id="terrain" data-keywords="terrain open difficult blocking elevated hazardous obscuring ground movement">
+      <div class="section-header">
+        <span class="section-title">🗺️ Terrain Types</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <table>
+          <tr><th>Type</th><th>Effect</th></tr>
+          <tr><td><strong>Open</strong></td><td>No modifier. Normal movement</td></tr>
+          <tr><td><strong>Difficult</strong></td><td>Costs 2 MOV per space</td></tr>
+          <tr><td><strong>Blocking</strong></td><td>Impassable. Cannot move through or occupy</td></tr>
+          <tr><td><strong>Elevated</strong></td><td>+1 attack rolls vs lower units</td></tr>
+          <tr><td><strong>Hazardous</strong></td><td>Damage on entry and at activation start</td></tr>
+          <tr><td><strong>Obscuring</strong></td><td>Blocks line of sight. No ranged attacks through</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Movement Types -->
+    <div class="section" id="movement" data-keywords="movement walk burrow climb fly jump swim teleport move">
+      <div class="section-header">
+        <span class="section-title">🏃 Movement Types</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <table>
+          <tr><th>Type</th><th>Description</th></tr>
+          <tr><td><strong>Walk</strong></td><td>Standard. Affected by difficult terrain. Blocked by blocking</td></tr>
+          <tr><td><strong>Burrow</strong></td><td>Underground. Ignore difficult/blocking. No end in occupied</td></tr>
+          <tr><td><strong>Climb</strong></td><td>Scale vertical surfaces freely</td></tr>
+          <tr><td><strong>Fly</strong></td><td>Through air. Ignore ground terrain. Over units. No end in occupied</td></tr>
+          <tr><td><strong>Jump</strong></td><td>Leap obstacles, gaps, difficult terrain (limited distance)</td></tr>
+          <tr><td><strong>Swim</strong></td><td>Water = open terrain</td></tr>
+          <tr><td><strong>Teleport</strong></td><td>Instant. Ignore all terrain/units. No Reactions provoked</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Size and Range -->
+    <div class="section" id="size-range" data-keywords="size range melee ranged distance space within">
+      <div class="section-header">
+        <span class="section-title">📏 Size & Range</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <div class="subsection-title">Size</div>
+          <p>Size 1 = 1 space, Size 2 = 2×2, Size 3 = 3×3</p>
+          <p><strong>Melee range = Size.</strong> Size 1 targets within 1 space.</p>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Standard Ranges</div>
+          <table>
+            <tr><th>Form</th><th>Range</th></tr>
+            <tr><td><strong>Melee</strong></td><td>Within 1 space (or Size if larger)</td></tr>
+            <tr><td><strong>Ranged</strong></td><td>2–5 spaces (cannot target within 1)</td></tr>
+          </table>
+        </div>
+
+        <div class="note">
+          <div class="note-title">Distance Counting</div>
+          Count shortest path without diagonals. "Within X" = 1 to X spaces. Minimum distance between units = 1 space.
+        </div>
+      </div>
+    </div>
+
+    <!-- Regalia -->
+    <div class="section" id="regalia" data-keywords="regalia tier noble royal imperial tag base damage evolution kishou kishin art budget">
+      <div class="section-header">
+        <span class="section-title">⚔️ Regalia</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <div class="subsection-title">Tiers</div>
+          <table>
+            <tr><th>Tier</th><th>Base Damage</th><th>Tags</th></tr>
+            <tr><td>Noble</td><td>1</td><td>4</td></tr>
+            <tr><td>Royal</td><td>2</td><td>3</td></tr>
+            <tr><td>Imperial</td><td>4</td><td>2</td></tr>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Evolution Stages</div>
+          <table>
+            <tr><th>Stage</th><th>Art Budget</th><th>Components</th><th>Art Slots</th></tr>
+            <tr><td>Base</td><td>4 points</td><td>Tier 1</td><td>2</td></tr>
+            <tr><td>Kishou</td><td>6 points</td><td>Tier 1–2</td><td>3</td></tr>
+            <tr><td>Kishin</td><td>8 points</td><td>Tier 1–3</td><td>4</td></tr>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Vestments</div>
+          <table>
+            <tr><th>Vestment</th><th>Bonus</th></tr>
+            <tr><td>Flickering</td><td>+1 EVA, +1 M.EVA</td></tr>
+            <tr><td>Resolute</td><td>+2 Guard</td></tr>
+            <tr><td>Spiritclad</td><td>+2 Barrier</td></tr>
+            <tr><td>Stalwart</td><td>+1 Guard, +1 Barrier</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Art Design -->
+    <div class="section" id="art-design" data-keywords="art timing action reactive swift instant design cap limit signature sustained permanent">
+      <div class="section-header">
+        <span class="section-title">✨ Art Design</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <div class="subsection-title">Timing Costs</div>
+          <table>
+            <tr><th>Timing</th><th>Cost</th><th>Notes</th></tr>
+            <tr><td>Action</td><td>+0</td><td>Uses Action (default)</td></tr>
+            <tr><td>Reactive</td><td>+1</td><td>Uses Reaction. Guard Arts +0</td></tr>
+            <tr><td>Swift</td><td>+2</td><td>Free Action. 1/round</td></tr>
+            <tr><td>Instant</td><td>+3</td><td>No action. 1/scene</td></tr>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Design Caps</div>
+          <table>
+            <tr><td>Max damage bonus</td><td>+8</td></tr>
+            <tr><td>Max forced movement</td><td>4 spaces</td></tr>
+            <tr><td>Max conditions/Art</td><td>2</td></tr>
+            <tr><td>Max area types/Art</td><td>1</td></tr>
+            <tr><td>Max cost reduction</td><td>−3</td></tr>
+            <tr><td>Min Art cost</td><td>1 point</td></tr>
+            <tr><td>Signature Arts</td><td>1</td></tr>
+            <tr><td>Sustained effects</td><td>1 active</td></tr>
+            <tr><td>Permanent effects</td><td>1 active</td></tr>
+            <tr><td>Permanent summons</td><td>1 active</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Derived Stats -->
+    <div class="section" id="derived-stats" data-keywords="stat statistics hp strike resonance eva meva guard barrier init retinue formula">
+      <div class="section-header">
+        <span class="section-title">📊 Derived Statistics</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <table>
+          <tr><th>Statistic</th><th>Formula</th></tr>
+          <tr><td>HP</td><td><span class="formula">Class Base + (Influence × 5)</span></td></tr>
+          <tr><td>Strike Rating</td><td><span class="formula">(Might + Grace) ÷ 2</span></td></tr>
+          <tr><td>Resonance Rating</td><td><span class="formula">(Presence + Insight) ÷ 2</span></td></tr>
+          <tr><td>EVA</td><td><span class="formula">6 + Grace + (Cunning ÷ 2)</span></td></tr>
+          <tr><td>M.EVA</td><td><span class="formula">6 + Presence + (Insight ÷ 3)</span></td></tr>
+          <tr><td>Guard</td><td><span class="formula">Might</span></td></tr>
+          <tr><td>Barrier</td><td><span class="formula">Insight</span></td></tr>
+          <tr><td>INIT</td><td><span class="formula">Grace + Cunning</span></td></tr>
+          <tr><td>Retinue</td><td><span class="formula">1 + ((Presence + Cunning) ÷ 4)</span></td></tr>
+        </table>
+        <div class="note">All derived statistics round down.</div>
+      </div>
+    </div>
+
+    <!-- Initiative & Defeat -->
+    <div class="section" id="initiative-defeat" data-keywords="initiative turn order commander defeat rout resist captured killed routed sovereign retainer">
+      <div class="section-header">
+        <span class="section-title">⚡ Initiative & Defeat</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <div class="subsection-title">Initiative</div>
+          <ol style="margin-left: 20px; color: var(--text-secondary);">
+            <li>Alliance chooses commander</li>
+            <li>Commander rolls <strong>2d6 + INIT</strong></li>
+            <li>Compare to enemy commander's INIT (static)</li>
+            <li>Higher side acts first</li>
+            <li>Acting side activates ALL units, then opposing side</li>
+          </ol>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Sovereign Defeat (0 HP)</div>
+          <div class="def-item">
+            <div class="def-term">Rout</div>
+            <div class="def-desc">Flee immediately. Removed from Strife. Retainers also removed.</div>
+          </div>
+          <div class="def-item">
+            <div class="def-term">Resist</div>
+            <div class="def-desc">Stay on field (prone, no actions). Can be healed. Victor may use Action within 1 space: Captured or Killed.</div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Retainer Defeat (0 Morale)</div>
+          <p>Immediately defeated. Victor chooses: <strong>Captured</strong>, <strong>Killed</strong>, or <strong>Routed</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Classes -->
+    <div class="section" id="classes" data-keywords="class guardian herald hunter invoker mender phantom slayer">
+      <div class="section-header">
+        <span class="section-title">🛡️ Classes</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <table>
+          <tr><th>Class</th><th>HP</th><th>MOV</th><th>Role</th></tr>
+          <tr><td><strong>Guardian</strong></td><td>20</td><td>4</td><td>Hold ground, protect allies</td></tr>
+          <tr><td><strong>Herald</strong></td><td>14</td><td>5</td><td>Command Retainers</td></tr>
+          <tr><td><strong>Hunter</strong></td><td>14</td><td>5</td><td>Control space, punish movement</td></tr>
+          <tr><td><strong>Invoker</strong></td><td>14</td><td>5</td><td>Area damage, scatter formations</td></tr>
+          <tr><td><strong>Mender</strong></td><td>14</td><td>5</td><td>Heal allies, prevent deaths</td></tr>
+          <tr><td><strong>Phantom</strong></td><td>12</td><td>6</td><td>Flank, assassinate isolated</td></tr>
+          <tr><td><strong>Slayer</strong></td><td>16</td><td>5</td><td>Chain kills, momentum</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Retainers -->
+    <div class="section" id="retainers" data-keywords="retainer attack morale humanoid beast construct monster spirit undead command order">
+      <div class="section-header">
+        <span class="section-title">👥 Retainers</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <div class="subsection-title">Retainer Attacks</div>
+          <p>Roll <strong>2d6 + Attack</strong> vs EVA (Physical) or M.EVA (Magical)</p>
+          <table>
+            <tr><th>Tier</th><th>Margin</th><th>Damage</th></tr>
+            <tr><td>Glancing</td><td>0 or less</td><td>1 Piercing</td></tr>
+            <tr><td>Noble</td><td>1–2</td><td>2</td></tr>
+            <tr><td>Royal</td><td>3–4</td><td>3</td></tr>
+            <tr><td>Imperial</td><td>5+</td><td>4</td></tr>
+          </table>
+          <p style="margin-top: 8px; color: var(--text-muted);">No Base Damage. No crits unless ability grants.</p>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Retainer Types</div>
+          <table>
+            <tr><th>Type</th><th>Properties</th></tr>
+            <tr><td><strong>Beast</strong></td><td>Immune to reasoning/intellect effects</td></tr>
+            <tr><td><strong>Construct</strong></td><td>No eat/sleep/breathe. Immune poison & living effects</td></tr>
+            <tr><td><strong>Humanoid</strong></td><td>Can use equipment. No immunities</td></tr>
+            <tr><td><strong>Monster</strong></td><td>Immune to ordinary animal effects</td></tr>
+            <tr><td><strong>Spirit</strong></td><td>Move through units. No end occupied</td></tr>
+            <tr><td><strong>Undead</strong></td><td>Immune poison & living effects. Weakness Light</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Heart Alignment -->
+    <div class="section" id="heart" data-keywords="heart alignment emotion ambition devotion fear grief hope pride solitude wrath">
+      <div class="section-header">
+        <span class="section-title">💜 Heart Alignment</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="note">
+          <div class="note-title">Heart Bonus</div>
+          When action clearly aligns with your Heart, roll <strong>3d6 and choose two</strong> instead of 2d6. Arbiter determines when this applies.
+        </div>
+        <table>
+          <tr><th>Heart</th><th>Aligned Actions</th></tr>
+          <tr><td><strong>Ambition</strong></td><td>Pursuing advancement, seizing opportunity, surpassing limits</td></tr>
+          <tr><td><strong>Devotion</strong></td><td>Acting for sworn one, fulfilling promises, sacrificing for another</td></tr>
+          <tr><td><strong>Fear</strong></td><td>Fleeing danger, protecting self, weaponizing dread</td></tr>
+          <tr><td><strong>Grief</strong></td><td>Acting in memory of fallen, honoring dead, carrying loss</td></tr>
+          <tr><td><strong>Hope</strong></td><td>Inspiring others, persevering against despair, creating future</td></tr>
+          <tr><td><strong>Pride</strong></td><td>Defending reputation, refusing humiliation, demonstrating superiority</td></tr>
+          <tr><td><strong>Solitude</strong></td><td>Acting alone, rejecting assistance, drawing strength from isolation</td></tr>
+          <tr><td><strong>Wrath</strong></td><td>Confronting wrongdoers, demanding justice, destroying what you despise</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Victory Objectives -->
+    <div class="section" id="victory" data-keywords="victory objective elimination decapitation control escape protection retrieval win">
+      <div class="section-header">
+        <span class="section-title">🏆 Victory Objectives</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <table>
+          <tr><th>Objective</th><th>Description</th></tr>
+          <tr><td><strong>Elimination</strong></td><td>Defeat all enemy units</td></tr>
+          <tr><td><strong>Decapitation</strong></td><td>Defeat enemy commander or specific target</td></tr>
+          <tr><td><strong>Control</strong></td><td>Hold position for X rounds</td></tr>
+          <tr><td><strong>Escape</strong></td><td>Move designated units to exit</td></tr>
+          <tr><td><strong>Protection</strong></td><td>Prevent target defeat for X rounds</td></tr>
+          <tr><td><strong>Retrieval</strong></td><td>Acquire object and escape</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Section toggle
+    document.querySelectorAll('.section-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const section = header.parentElement;
+        section.classList.toggle('expanded');
+      });
+    });
+
+    // Quick nav
+    document.querySelectorAll('.quick-nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sectionId = btn.dataset.section;
+        const section = document.getElementById(sectionId);
+        if (section) {
+          // Expand section
+          section.classList.add('expanded');
+          // Scroll to section
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const sections = document.querySelectorAll('.section');
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      
+      if (!query) {
+        // Show all sections
+        sections.forEach(section => {
+          section.classList.remove('hidden');
+        });
+        return;
+      }
+
+      sections.forEach(section => {
+        const keywords = section.dataset.keywords || '';
+        const content = section.textContent.toLowerCase();
+        
+        if (keywords.includes(query) || content.includes(query)) {
+          section.classList.remove('hidden');
+          section.classList.add('expanded');
+        } else {
+          section.classList.add('hidden');
+        }
+      });
+    });
+
+    // Clear search on Escape
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+      }
+    });
+  </script>
+</body>
+</html>
