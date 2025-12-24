@@ -1,14 +1,14 @@
 {
   "manifest_version": 1,
   "name": "Sovereign Regalia SRD",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Quick reference document for Sovereign Regalia TTRPG rules, conditions, terrain, and mechanics.",
   "author": "Sovereign Regalia",
-  "icon": "./icon.svg",
+  "icon": "https://eikosakura.github.io/sovereignregalia-srd/icon.svg",
   "action": {
     "title": "Sovereign Regalia SRD",
-    "icon": "./icon.svg",
-    "popover": "./index.html",
+    "icon": "https://eikosakura.github.io/sovereignregalia-srd/icon.svg",
+    "popover": "https://eikosakura.github.io/sovereignregalia-srd/index.html",
     "height": 600,
     "width": 450
   }
