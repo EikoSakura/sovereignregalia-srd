@@ -1,7 +1,7 @@
 {
   "manifest_version": 1,
   "name": "Sovereign Regalia SRD",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Quick reference document for Sovereign Regalia TTRPG rules, conditions, terrain, and mechanics.",
   "author": "Sovereign Regalia",
   "icon": "./icon.svg",
