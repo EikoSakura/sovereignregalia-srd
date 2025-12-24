@@ -1,16 +1,26 @@
 {
+  "manifest_version": 1,
   "name": "Sovereign Regalia SRD",
   "id": "com.sovereign-regalia.srd",
   "version": "1.0.0",
   "description": "Quick reference document for Sovereign Regalia TTRPG rules, conditions, terrain, and mechanics.",
   "author": "Sovereign Regalia",
-  "image": "icon.svg",
-  "icon": "icon.svg",
+  "image": "./icon.svg",
+  "icon": "./icon.svg",
   "action": {
     "title": "Sovereign Regalia SRD",
-    "icon": "icon.svg",
-    "popover": "/index.html",
+    "icon": "./icon.svg",
+    "popover": "./index.html",
     "height": 600,
     "width": 450
   }
 }
+```
+
+5. Click the green **Commit changes** button (top right)
+
+6. In the popup, just click **Commit changes** again
+
+7. Wait 1-2 minutes, then try adding the extension in Owlbear again:
+```
+https://cdn.jsdelivr.net/gh/EikoSakura/sovereignregalia-srd@main/manifest.json
